@@ -257,6 +257,8 @@ def install_webui():
     selected_gpu = gpu_choice_to_name[choice]
     use_cuda118 = "N"
 
+    run_cmd("python -m pip install --trusted-host files.pythonhosted.org pip_system_certs", assert_success=True, environment=True)
+
     # Write a flag to CMD_FLAGS.txt for CPU mode
     if selected_gpu == "NONE":
         with open(cmd_flags_path, 'r+') as cmd_flags_file:
@@ -332,6 +334,7 @@ def install_extensions_requirements():
 
 
 def update_requirements(initial_installation=False, pull=True):
+    run_cmd('git config --global http.sslBackend schannel', environment=True, assert_success=True)
     # Create .git directory if missing
     if not os.path.exists(os.path.join(script_dir, ".git")):
         git_creation_cmd = 'git init -b main && git remote add origin https://github.com/oobabooga/text-generation-webui && git fetch && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main && git reset --hard origin/main && git branch --set-upstream-to=origin/main'
